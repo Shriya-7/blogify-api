@@ -1,10 +1,17 @@
-const http = require("http");
+const express = require("express");
+const app = express();
 
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.end("Blogify API is running!");
-});
+// correct import
+const postsRouter = require("./routes/posts.routes.js");
 
-server.listen(3000, () => {
-  console.log("Server started on http://localhost:3000");
+
+app.use(express.json());
+
+app.get("/",(req,res)=>{
+    return res.status(200).send("this is blogify backend")
+})
+app.use("/api/v1/posts", postsRouter);
+
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
 });
