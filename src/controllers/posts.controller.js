@@ -1,39 +1,51 @@
-// src/controllers/posts.controller.js
+const Post = require("../models/Post");
 
-// GET /api/v1/posts
-exports.getAllPosts = (req, res) => {
+// Update post — only owner can update
+exports.updatePost = async (req, res) => {
   try {
-    return res.status(200).json({
-      success: true,
-      data: {
-        message: "All posts fetched successfully"
-        // Later you will replace this message with actual posts from DB
-      }
-    });
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // ownership check (authorization)
+    if (post.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to update this post" });
+    }
+
+    post.title = req.body.title || post.title;
+    post.content = req.body.content || post.content;
+
+    const updatedPost = await post.save();
+
+    res.status(200).json(updatedPost);
+
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      error: { message: "Internal Server Error" }
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// GET /api/v1/posts/:id
-exports.getPostById = (req, res) => {
-  try {
-    const { id } = req.params;
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        postId: id
-        // Later: Here you will return actual post data
-      }
-    });
+// Delete post — only owner can delete
+exports.deletePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // ownership check
+    if (post.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to delete this post" });
+    }
+
+    await post.deleteOne();
+
+    res.status(200).json({ message: "Post removed successfully" });
+
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      error: { message: "Internal Server Error" }
-    });
+    res.status(500).json({ message: error.message });
   }
 };

@@ -1,11 +1,16 @@
-const express = require('express');
+const express = require("express");
+const { protect } = require("../middleware/authMiddleware");
+const {
+  updatePost,
+  deletePost
+} = require("../controllers/posts.controller");
+
 const router = express.Router();
-const postController = require('../controllers/posts.controller');
 
-// GET all posts
-router.get('/', postController.getAllPosts);
+// Update post (authenticated + owner only)
+router.put("/:id", protect, updatePost);
 
-// GET single post (DYNAMIC ROUTE)
-router.get('/:postId', postController.getPostById);
+// Delete post (authenticated + owner only)
+router.delete("/:id", protect, deletePost);
 
 module.exports = router;
