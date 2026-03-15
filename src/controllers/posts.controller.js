@@ -1,7 +1,7 @@
-const Post = require("../models/Post");
+import Post from "../models/Post.js";
 
 // Update post — only owner can update
-exports.updatePost = async (req, res) => {
+export const updatePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -10,7 +10,7 @@ exports.updatePost = async (req, res) => {
     }
 
     // ownership check (authorization)
-    if (post.user.toString() !== req.user._id.toString()) {
+    if (post.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized to update this post" });
     }
 
@@ -26,9 +26,8 @@ exports.updatePost = async (req, res) => {
   }
 };
 
-
 // Delete post — only owner can delete
-exports.deletePost = async (req, res) => {
+export const deletePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -37,7 +36,7 @@ exports.deletePost = async (req, res) => {
     }
 
     // ownership check
-    if (post.user.toString() !== req.user._id.toString()) {
+    if (post.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized to delete this post" });
     }
 

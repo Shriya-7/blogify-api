@@ -1,9 +1,6 @@
-const express = require("express");
-const { protect } = require("../middleware/authMiddleware");
-const {
-  updatePost,
-  deletePost
-} = require("../controllers/posts.controller");
+import express from "express";
+import { protect } from "../middlewares/auth.middleware.js";
+import { updatePost, deletePost } from "../controllers/posts.controller.js";
 
 const router = express.Router();
 
@@ -18,4 +15,4 @@ router.put("/:id", protect, updatePost);
 // Delete post (authenticated + owner only)
 router.delete("/:id", protect, deletePost);
 
-module.exports = router;
+export default router;
