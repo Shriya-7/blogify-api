@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
 // generate JWT
 const generateToken = (id) => {
@@ -8,15 +8,59 @@ const generateToken = (id) => {
   });
 };
 
-// login user
-exports.loginUser = async (req, res) => {
+// Register user
+export const registerUser = async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ 
+      $or: [{ email }, { username }] 
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        error: { message: "User already exists with this email or username" }
+      });
+    }
+
+    const user = new User({
+      username,
+      email,
+      password
+    });
+
+    const savedUser = await user.save();
+
+    res.status(201).json({
+      success: true,
+      data: {
+        _id: savedUser._id,
+        username: savedUser.username,
+        email: savedUser.email
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: { message: error.message }
+    });
+  }
+};
+
+// Login user
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
 
     if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({
+        success: false,
+        error: { message: "Invalid credentials" }
+      });
     }
 
     const token = generateToken(user._id);
@@ -29,9 +73,23 @@ exports.loginUser = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
-    res.json({ message: "Login successful" });
-
+    res.status(200).json({
+      success: true,
+      message: "Login successful"
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      error: { message: error.message }
+    });
   }
+};
+
+// Logout user
+export const logoutUser = (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully"
+  });
 };
