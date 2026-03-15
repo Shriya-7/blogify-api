@@ -1,9 +1,9 @@
 import express from "express";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import mainRouter from "./routes/index.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import connectDB from "./config/db.js";
 
 dotenv.config();
 
@@ -16,12 +16,8 @@ app.use(express.json());
 /* ---------- PORT ---------- */
 const PORT = process.env.PORT || 3000;
 
-/* ---------- MONGOOSE CONNECTION (POOL SIZE FROM ENV) ---------- */
-mongoose.connect(process.env.MONGO_URI, {
-  maxPoolSize: process.env.DB_POOL_SIZE || 10
-})
-.then(() => console.log("MongoDB Connected with pool size:", process.env.DB_POOL_SIZE))
-.catch(err => console.log(err));
+/* ---------- DATABASE CONNECTION ---------- */
+connectDB();
 
 /* ---------- MAIN ROUTER ---------- */
 app.use("/api/v1", mainRouter);

@@ -1,0 +1,385 @@
+{
+  "info": {
+    "name": "Blogify API",
+    "description": "A comprehensive RESTful API for managing blog posts and user authentication",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john_doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"_id\": \"60f7b3b3b3b3b3b3b3b3b3b3\",\n    \"username\": \"john_doe\",\n    \"email\": \"john@example.com\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Set-Cookie",
+                  "value": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Set-Cookie",
+                  "value": "token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Logged out successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "item": [
+        {
+          "name": "Get All Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"_id\": \"60f7b3b3b3b3b3b3b3b3b3b3\",\n      \"title\": \"My First Post\",\n      \"content\": \"This is the content of my first post\",\n      \"author\": {\n        \"_id\": \"60f7b3b3b3b3b3b3b3b3b3b3\",\n        \"username\": \"john_doe\",\n        \"email\": \"john@example.com\"\n      },\n      \"createdAt\": \"2021-07-21T10:30:00.000Z\",\n      \"updatedAt\": \"2021-07-21T10:30:00.000Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Post by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/:postId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", ":postId"],
+              "variable": [
+                {
+                  "key": "postId",
+                  "value": "60f7b3b3b3b3b3b3b3b3b3b3"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"_id\": \"60f7b3b3b3b3b3b3b3b3b3b3\",\n    \"title\": \"My First Post\",\n    \"content\": \"This is the content of my first post\",\n    \"author\": {\n      \"_id\": \"60f7b3b3b3b3b3b3b3b3b3b3\",\n      \"username\": \"john_doe\",\n      \"email\": \"john@example.com\"\n    },\n    \"createdAt\": \"2021-07-21T10:30:00.000Z\",\n    \"updatedAt\": \"2021-07-21T10:30:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Not Found Response",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Post not found\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"My New Post\",\n  \"content\": \"This is the content of my new post\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"_id\": \"60f7b3b3b3b3b3b3b3b3b3b3\",\n    \"title\": \"My New Post\",\n    \"content\": \"This is the content of my new post\",\n    \"author\": {\n      \"_id\": \"60f7b3b3b3b3b3b3b3b3b3b3\",\n      \"username\": \"john_doe\",\n      \"email\": \"john@example.com\"\n    },\n    \"createdAt\": \"2021-07-21T10:30:00.000Z\",\n    \"updatedAt\": \"2021-07-21T10:30:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Unauthorized Response",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Not authorized\"\n  }\n}"
+            },
+            {
+              "name": "Validation Error Response",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Title and content are required\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Post",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Post Title\",\n  \"content\": \"Updated content of the post\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/:postId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", ":postId"],
+              "variable": [
+                {
+                  "key": "postId",
+                  "value": "60f7b3b3b3b3b3b3b3b3b3b3"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"_id\": \"60f7b3b3b3b3b3b3b3b3b3b3\",\n    \"title\": \"Updated Post Title\",\n    \"content\": \"Updated content of the post\",\n    \"author\": {\n      \"_id\": \"60f7b3b3b3b3b3b3b3b3b3b3\",\n      \"username\": \"john_doe\",\n      \"email\": \"john@example.com\"\n    },\n    \"createdAt\": \"2021-07-21T10:30:00.000Z\",\n    \"updatedAt\": \"2021-07-21T11:30:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Not Found Response",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Post not found\"\n  }\n}"
+            },
+            {
+              "name": "Forbidden Response",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Not authorized to update this post\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Post",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/:postId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", ":postId"],
+              "variable": [
+                {
+                  "key": "postId",
+                  "value": "60f7b3b3b3b3b3b3b3b3b3b3"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Post removed successfully\"\n}"
+            },
+            {
+              "name": "Not Found Response",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Post not found\"\n  }\n}"
+            },
+            {
+              "name": "Forbidden Response",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Not authorized to delete this post\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ]
+}
