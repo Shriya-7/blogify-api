@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import postRouter from "./routes/posts.routes.js";
 
 dotenv.config();
 
@@ -16,6 +17,9 @@ mongoose.connect(process.env.MONGO_URI, {
 })
 .then(() => console.log("MongoDB Connected with pool size:", process.env.DB_POOL_SIZE))
 .catch(err => console.log(err));
+
+/* ---------- ROUTES ---------- */
+app.use("/api/v1/posts", postRouter);
 
 /* ---------- TEST ROUTE ---------- */
 app.get("/api/users", async (req, res) => {
