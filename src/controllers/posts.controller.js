@@ -1,9 +1,9 @@
-import Post from "../models/Post.js";
+import postService from "../services/posts.service.js";
 
 // Get all posts
 export const getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate('author', 'username email');
+    const posts = await postService.getAllPosts();
     
     res.status(200).json({
       success: true,
@@ -20,7 +20,7 @@ export const getAllPosts = async (req, res) => {
 // Get single post by ID
 export const getPostById = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate('author', 'username email');
+    const post = await postService.getPostById(req.params.id);
 
     if (!post) {
       return res.status(404).json({
@@ -53,14 +53,13 @@ export const createPost = async (req, res) => {
       });
     }
 
-    const post = new Post({
+    const postData = {
       title,
       content,
       author: req.user._id
-    });
+    };
 
-    const savedPost = await post.save();
-    await savedPost.populate('author', 'username email');
+    const savedPost = await postService.createPost(postData);
 
     res.status(201).json({
       success: true,
@@ -77,28 +76,32 @@ export const createPost = async (req, res) => {
 // Update post — only owner can update
 export const updatePost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        error: { message: "Post not found" }
-      });
-    }
-
-    // ownership check (authorization)
-    if (post.author.toString() !== req.user._id.toString()) {
+    const postId = req.params.id;
+    const userId = req.user._id.toString();
+    
+    // Check if user owns the post
+    const isOwner = await postService.isPostOwner(postId, userId);
+    
+    if (!isOwner) {
       return res.status(403).json({
         success: false,
         error: { message: "Not authorized to update this post" }
       });
     }
 
-    post.title = req.body.title || post.title;
-    post.content = req.body.content || post.content;
+    const updateData = {
+      title: req.body.title,
+      content: req.body.content
+    };
 
-    const updatedPost = await post.save();
-    await updatedPost.populate('author', 'username email');
+    const updatedPost = await postService.updatePost(postId, updateData);
+
+    if (!updatedPost) {
+      return res.status(404).json({
+        success: false,
+        error: { message: "Post not found" }
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -115,24 +118,27 @@ export const updatePost = async (req, res) => {
 // Delete post — only owner can delete
 export const deletePost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        error: { message: "Post not found" }
-      });
-    }
-
-    // ownership check
-    if (post.author.toString() !== req.user._id.toString()) {
+    const postId = req.params.id;
+    const userId = req.user._id.toString();
+    
+    // Check if user owns the post
+    const isOwner = await postService.isPostOwner(postId, userId);
+    
+    if (!isOwner) {
       return res.status(403).json({
         success: false,
         error: { message: "Not authorized to delete this post" }
       });
     }
 
-    await post.deleteOne();
+    const deletedPost = await postService.deletePost(postId);
+
+    if (!deletedPost) {
+      return res.status(404).json({
+        success: false,
+        error: { message: "Post not found" }
+      });
+    }
 
     res.status(200).json({
       success: true,
