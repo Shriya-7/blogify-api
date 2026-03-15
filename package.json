@@ -1,27 +1,19 @@
 {
   "name": "blogify-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Blogify API built with Express.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Shriya",
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Shriya-7/blogify-api.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Shriya-7/blogify-api/issues"
-  },
-  "homepage": "https://github.com/Shriya-7/blogify-api#readme",
-  "devDependencies": {
-    "nodemon": "^3.1.11"
-  },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
