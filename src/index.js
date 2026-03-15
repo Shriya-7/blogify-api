@@ -1,10 +1,16 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
+import mainRouter from "./routes/index.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 dotenv.config();
 
 const app = express();
+
+// Global middleware
+app.use(cors());
 app.use(express.json());
 
 /* ---------- PORT ---------- */
@@ -17,13 +23,11 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log("MongoDB Connected with pool size:", process.env.DB_POOL_SIZE))
 .catch(err => console.log(err));
 
-/* ---------- TEST ROUTE ---------- */
-app.get("/api/users", async (req, res) => {
-  res.json({
-    success: true,
-    message: "Users fetched successfully"
-  });
-});
+/* ---------- MAIN ROUTER ---------- */
+app.use("/api/v1", mainRouter);
+
+/* ---------- ERROR HANDLING ---------- */
+app.use(errorHandler);
 
 /* ---------- SERVER ---------- */
 app.listen(PORT, () => {

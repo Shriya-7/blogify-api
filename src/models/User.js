@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
@@ -34,4 +34,4 @@ userSchema.index(
   { unique: true, collation: { locale: 'en', strength: 2 } }
 );
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model("User", userSchema);
